@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nexus-memory"
+version = "0.1.0"
+description = "A local photo archive for a spatial interface for human memory"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.scripts]
+nexus = "nexus.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["nexus*"]
