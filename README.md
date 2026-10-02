@@ -2,201 +2,96 @@
 
 **A spatial interface for human memory.**
 
-nexus starts with a local photo archive. Drop your photos into a folder, run an
-import, and keep adding to the same archive each week. Photos with capture times
-and coordinates are grouped into suggested moments. You can name chapters and
-trips, add captions to individual photos, and export the archive for a future map.
+I want to open a map and see where my life happened.
 
-This milestone is a command-line tool. The interactive map, glowing hotspots,
-photo stacks, and chronological playback come next.
+The coffee shop I kept going back to. The apartment where everyone ended up.
+A weekend in another city. The street where we took a photo on the walk home,
+and the story I would have forgotten if I hadn't written down one sentence.
 
-## Setup
+nexus is the project I'm building to give those memories a place to live.
 
-Requires **Python 3.12+** and **Perl** on Linux, macOS, or Windows through WSL.
-There are no third-party Python runtime packages. Metadata extraction uses
-[ExifTool](https://exiftool.org/).
+## It starts on a Sunday
 
-From the project directory:
+The experience I want is simple: come home on Sunday, upload the week's photos,
+and watch them settle onto my map.
 
-```bash
-python3 scripts/setup_exiftool.py
-export PATH="$PWD/bin:$PATH"
-nexus doctor
-```
+New places light up. Photos from the same afternoon gather into little stacks.
+A weekend away becomes a trip I can come back to. Somewhere I've photographed
+before gets another layer of memories.
 
-The setup script installs ExifTool 13.59 under the ignored `.tools/` directory,
-using a pinned official source commit and verified SHA-256 checksum. It does not
-need administrator access. Alternatively, install ExifTool with your OS package
-manager, or set `NEXUS_EXIFTOOL` to its executable. Perl is already included on
-many Linux/macOS systems; on Ubuntu/WSL it can be installed with `sudo apt install perl`.
+Maybe I label a few pictures. Maybe I name a whole group “Alex's birthday.”
+Maybe I leave everything alone. The map should still grow, even on weeks when
+I don't feel like writing anything.
 
-You can always use `./bin/nexus` or `python3 -m nexus` from this directory instead
-of changing PATH. Optional Python packaging is available with `pip install -e .`
-in a virtual environment; when using that route, provide ExifTool on PATH or via
-`NEXUS_EXIFTOOL`.
+Over time, this becomes a small ritual: looking back at the week while it's still
+fresh, saving a few details, and seeing what it added to my world.
 
-## Start with your Pittsburgh photos
+## The map I want to see
 
-Use originals exported with their metadata. A local folder downloaded from Drive
-works too; nexus does not connect to Drive itself yet. Inspect first:
+Imagine a dark globe with small islands of light wherever there are memories.
+Zoom toward a city and those islands separate into neighborhoods, places, and
+individual moments. Keep zooming and the photos come into view.
 
-```bash
-nexus inspect "/path/to/pittsburgh-photos"
-```
+A tiny cafe could become one of the brightest places on my map because I kept
+returning to it. A place I visited once could matter just as much because of
+what happened there.
 
-This reads the photos without creating an archive or changing any files. It reports
-formats, capture-date coverage, GPS coverage, explicit timezone coverage, and
-files that cannot be processed. Photos whose metadata was removed during sharing
-will still be usable, but cannot automatically supply missing locations or dates.
+I want the movement through this to feel natural: a smooth transition from the
+world to a city, from a city to a trip, from a cluster of photos to one memory.
+The map gives each photo its surroundings. The photos give the map its meaning.
 
-Then import:
+And I want to move through time. Pull the timeline back and see the places that
+were part of my life then. Press play and watch new memories appear, week by week.
 
-```bash
-nexus import "/path/to/pittsburgh-photos" --chapter "Pittsburgh"
-nexus photos --limit 20
-nexus moments
-```
+## Pittsburgh first. Madrid next.
 
-By default, the archive lives at `~/.local/share/nexus`, outside the code repository.
-To use another disk or folder, set `NEXUS_ARCHIVE`, or put `--archive` **before**
-the command:
+I already have a lot of photos from Pittsburgh. That's where this starts:
+seeing what familiar places look like when I bring those pictures together.
 
-```bash
-nexus --archive "/path/to/my-nexus-archive" import "/path/to/photos"
-```
+Madrid is the chapter I'm especially excited about. At the beginning of a
+semester abroad, nearly every place is unfamiliar. Then an apartment becomes
+home. A cafe becomes the usual spot. A neighborhood starts filling up with
+people and stories.
 
-In WSL, a Windows folder such as `C:\Users\you\Pictures\Pittsburgh` is usually
-available as `/mnt/c/Users/you/Pictures/Pittsburgh`.
+I want to watch that happen on the map.
 
-The importer copies each supported original into the archive. It never edits or
-deletes the source. HEIC/HEIF, JPEG, and PNG are supported, including uppercase
-extensions. Videos, Live Photo motion files, and edit sidecars are reported as
-unsupported for now. The still image of a Live Photo imports normally.
+A weekend in Lisbon, a match at the Bernabéu, or a snowboard trip could each have
+its own collection of places, photos, and memories. They would sit inside a
+larger chapter, and those chapters would eventually become a map of years of my life.
 
-## Weekly imports and optional labels
+## Being able to go back
 
-Repeat the import with the next folder, or the same growing folder. SHA-256 hashes
-identify byte-identical photos even when names or folders change. Different files
-with the same filename remain separate photos. Edited or converted versions are
-also separate; visual duplicate detection is not part of this milestone.
+Years later, I want to click a place and remember an ordinary day there.
 
-Name an entire batch as a trip:
+Not every memory needs a big occasion. A random Tuesday can hold a photo of
+lunch, a familiar view, or a sentence that brings the whole afternoon back.
 
-```bash
-nexus import "/path/to/weekend-photos" --chapter "Pittsburgh" --trip "Weekend in Philadelphia"
-```
+Some of the things I'd love to build toward:
 
-Or organize individual photos afterward. `photos` prints short photo IDs; replace
-`PHOTO_ID` below with a full ID or a unique prefix from that output:
+- **Replay a week or a trip.** Move between photographed moments, with photos
+  and captions appearing along the way.
+- **Take me somewhere.** Open a day I haven't thought about in years.
+- **Watch a chapter grow.** See the first few memories in a city become a whole
+  collection of familiar places.
+- **Find a memory through a place.** Start with “that restaurant near our
+  apartment” and follow it back to the photos and people I recorded there.
+- **Leave something for future me.** Save a message somewhere and rediscover it
+  when I return.
 
-```bash
-nexus trip create "Weekend in Philadelphia"
-nexus trip add "Weekend in Philadelphia" PHOTO_ID ANOTHER_PHOTO_ID
-nexus trip remove "Weekend in Philadelphia" PHOTO_ID
-nexus trip list
-nexus photos --trip "Weekend in Philadelphia" --limit 0
-nexus annotate PHOTO_ID --caption "Our usual coffee spot"
-nexus show PHOTO_ID
-```
+The details I add myself should always have a place here. One sentence about
+what made a night funny can mean more to me than a hundred photos on their own.
 
-`chapter` supports the same `create`, `add`, `remove`, and `list` commands as `trip`.
-Photos can belong to multiple collections. Passing `--caption ""` clears a caption.
-Trip/chapter membership and captions belong to stable photo IDs and survive
-re-imports and moment regrouping. Labels are completely optional.
+## Where it is today
 
-## How moments work
+The photo archive is the first working piece. It can import originals from a
+local folder, read their dates and locations, group them into suggested moments,
+and keep optional captions, trips, and chapters.
 
-Moments are suggestions derived from the photos you actually captured:
+The visual map and animated replays are still ahead. For now, the goal is to
+bring in the Pittsburgh photos and understand what they can reveal. Photos give
+us the places and moments we captured; the map should be honest about the gaps
+between them.
 
-- Order photos by capture time within the same timezone-offset context.
-- Keep consecutive photos together when the time gap is at most **3 hours** and
-  their locations are within **250 meters of the moment's first photo**.
-- A larger gap, a more distant photo, or a different timezone offset starts a new
-  moment. The anchor prevents a chain of nearby photos from drifting across a city.
-- A single photo can form a moment. Photos without a usable date or GPS remain in
-  the archive and can be assigned to trips/chapters manually.
-- Unknown timezone offsets stay unknown; they group only with other unknown offsets.
-  No timezone is guessed from the computer, GPS, or upload date. This conservative
-  rule can split an outing when metadata or offsets differ.
+The code is public. My photo archive stays local.
 
-Change the thresholds and regroup at any time:
-
-```bash
-nexus regroup --gap-hours 2 --radius-meters 150
-```
-
-These settings persist for later imports and apply to the whole archive. Moments
-are rebuilt after each import; their IDs describe their current membership and
-can change when new photos arrive. Use **photo IDs** for durable annotations.
-Moment start/end values are first/last photo timestamps, not measured dwell time.
-No routes, distance traveled, exact businesses, or exploration percentages are inferred.
-
-## Export and archive layout
-
-```bash
-nexus export
-```
-
-Each export writes a new directory containing:
-
-- `manifest.json`: a versioned snapshot of photos, normalized and raw metadata,
-  captions, moments, chapters, and trips.
-- `inventory.csv`: a spreadsheet-friendly photo inventory. Potential formula
-  prefixes in text cells are escaped; JSON preserves the exact text.
-
-The command prints the output paths. Both files are published together into a new
-export directory. Archive file paths inside the manifest are relative to the archive
-root; original source paths are retained separately as provenance.
-
-```text
-~/.local/share/nexus/
-  archive.sqlite3
-  originals/<hash-prefix>/<sha256>.<extension>
-  exports/<timestamp-id>/
-    manifest.json
-    inventory.csv
-```
-
-See [the manifest contract](docs/manifest.md) for the future map's input format.
-
-## Recovery and error handling
-
-Every import records a batch. Individual file failures do not stop other photos
-from importing. Review the full report with `nexus batches`. `inspect` and `import`
-return exit code 1 for file or directory-read failures; unsupported files are skipped.
-Metadata warnings are reported but do not automatically reject an otherwise
-readable file. Reading metadata is not a full image-decoding integrity check.
-
-If interrupted, rerun the same command. Previously committed photos remain in the
-archive, incomplete staging copies are cleaned up, and moments are regenerated
-after the next completed import. Re-importing can also restore missing or damaged
-archive originals from matching source files. Only one nexus command accesses an
-archive at a time; a second command gets a clear message rather than competing.
-
-Back up the **entire archive directory** while nexus is idle. Its originals and
-database are the source of truth; exported manifests are snapshots. No automatic
-cloud backup or sync is included.
-
-## Public code, local memories
-
-The GitHub repository contains code, documentation, and synthetic test generators.
-The default archive is outside the repository. `.gitignore` additionally excludes
-common photo formats, archive folders, databases, generated exports, local config,
-and logs. Your originals, coordinates, captions, and exports stay local. Inspect
-an export before choosing to share it: it contains personal metadata and source paths.
-
-## Development
-
-```bash
-nexus doctor
-python3 -m unittest discover -v
-```
-
-Tests create synthetic PNG/JPEG images and a minimal HEIF metadata container in
-temporary directories, then exercise the real ExifTool reader. No personal photos
-or downloaded photographs are committed. Integration tests skip when ExifTool is
-missing, so run `doctor` first. CI installs the pinned dependency and checks it
-before running the full suite.
-
-The next real-data check is to inspect a representative Pittsburgh folder, review
-several proposed moments, and repeat the import to confirm zero added duplicates.
+For setup and commands, see the [usage guide](docs/usage.md).
